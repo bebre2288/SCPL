@@ -6,59 +6,42 @@ using namespace std;
 string program;
 int counter=0;
 int iter = 0;
+int temp = 0;
 
 int operate(int num) {
 	char oper = program[iter];
-
-	if(oper=='+') {
-		num++;
-	} else if (oper=='-') {
-		num--;
-	} else if (oper=='*') {
-		iter++;
-		num *= operate(num);
-	} else if (oper=='/') {
-		iter++;
-		num /= operate(num);
-	} else if (oper=='(') {
-		int temp = 0;
-		while(program[iter]!=')') {
+	
+	switch(oper){
+		case '+':
+			num++;
+			break;
+		case '-':
+			num--;
+			break;
+		case '*':
 			iter++;
-			temp = operate(temp);
-		}
-		num = temp;
+			num *= operate(num);
+			break;
+		case '/':
+			iter++;
+			num /= operate(num);
+			break;
+		case '(':
+			temp = 0;
+			while(program[iter]!=')') {
+				iter++;
+				temp = operate(temp);
+			}
+			num = temp;
+			break;
+		case ',':
+			cout << (char)num;
+			num=0;
+			break;
+		case '.':
+			cin >> num;
+			break;
 	}
-
-
-	else if (oper=='<') {
-		iter++;
-		int temp=0;
-		int condition = 0;
-		while(program[iter]!=';') {
-			iter++;
-			condition = operate(condition);
-		}
-		char tmp_oper = program[iter];
-		iter++;
-		while(program[iter]!='>') {
-			iter++;
-			temp = operate(temp);
-		}
-		while(condition!=0) {
-			iter++;
-			condition = operate(condition);
-		}
-
-	}
-
-
-	else if (oper==',') {
-		cout << (char)num;
-		num=0;
-	} else if (oper=='.') {
-		cin >> num;
-	}
-
 	return num;
 }
 
@@ -66,9 +49,9 @@ int main(int argc, char *argv[]) {
 	
 	string fileName = argv[1];
 	ifstream file;
-	file.open (fileName);
+	file.open (fileName, ios::in);
 	getline(file, program);
-	
+	file.close();
 	cout << program << endl;
 	while(iter < program.length()) {
 		counter = operate(counter);
